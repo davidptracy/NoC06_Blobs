@@ -2,10 +2,12 @@ class Blob {
 
   ArrayList<Particle> particles;
   ArrayList<Connection> springs;
+  ArrayList<MinConnection> msprings;
 
   Blob() {
     particles = new ArrayList<Particle>();
     springs = new ArrayList<Connection>();
+    msprings = new ArrayList<MinConnection>();
 
     int n = 9;
     float len = 100;
@@ -23,16 +25,24 @@ class Blob {
         Connection c = new Connection(p, previous, len, strength);
         physics.addSpring(c);
         springs.add(c);
-      }      
+      }
     }
-    
+
     Connection cLast = new Connection(particles.get(0), particles.get(particles.size()-1), len, strength);
     physics.addSpring(cLast);
     springs.add(cLast);
+
+
+    MinConnection mc = new MinConnection(particles.get(0), particles.get(4), len, strength);
+    physics.addSpring(mc);
+    msprings.add(mc);
   }
 
   void display() {
     for (Connection c : springs) {
+      c.display();
+    }
+    for (MinConnection c : msprings) {
       c.display();
     }
     for (Particle p : particles) {
