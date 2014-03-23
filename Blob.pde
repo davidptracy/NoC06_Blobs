@@ -2,12 +2,14 @@ class Blob {
 
   ArrayList<Particle> particles;
   ArrayList<Connection> springs;
+  ArrayList<MinConnection> msprings;
 
   Blob() {
     particles = new ArrayList<Particle>();
     springs = new ArrayList<Connection>();
+    msprings = new ArrayList<MinConnection>();
 
-    int n = 9;
+    int n = 8;
     float len = 100;
     float strength = .125;
 
@@ -20,19 +22,38 @@ class Blob {
 
       if (theta > 0) {
         Particle previous = particles.get(particles.size()-2);
-        Connection c = new Connection(p, previous, len, strength);
-        physics.addSpring(c);
-        springs.add(c);
-      }      
+        //Connection c = new Connection(p, previous, len, strength);
+        //physics.addSpring(c);
+        //springs.add(c);
+      }
     }
-    
+
     Connection cLast = new Connection(particles.get(0), particles.get(particles.size()-1), len, strength);
     physics.addSpring(cLast);
     springs.add(cLast);
+   
+    
+    // Or something like this which connects each to each?
+    for (Particle a : particles) {
+      for (Particle b : particles) {
+        if (a != b) {
+          Connection c = new Connection(a, b, len, strength/10);
+          physics.addSpring(c);
+          springs.add(c);
+        }
+      }
+    }
+
+    MinConnection mc = new MinConnection(particles.get(0), particles.get(4), len, strength);
+    physics.addSpring(mc);
+    msprings.add(mc);
   }
 
   void display() {
     for (Connection c : springs) {
+      c.display();
+    }
+    for (MinConnection c : msprings) {
       c.display();
     }
     for (Particle p : particles) {
